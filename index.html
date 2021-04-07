@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test task</title>
+    <style>
+        .container {
+            width: 400px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .note-form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        input {
+            width: 100%;
+            height: 25px;
+        }
+        button {
+            width: 150px;
+            height: 40px;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .notes {
+            margin-top: 25px;
+        }
+        .note-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 25px;
+            border-top: 1px solid lightslategray;
+            text-align: center;
+        }
+        .note-item:last-of-type {
+            border-bottom: 1px solid lightslategray;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Тестовое задание</h1>
+    <div class="form-wrapper">
+        <form class="note-form" >
+            <input type="text" name="note">
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+    <div class="notes"></div>
+</div>
+</body>
+</html>
+
+<script>
+    function sendNote()
+    {
+        const noteForm = document.querySelector('.note-form');
+        noteForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(noteForm);
+            getData(formData);
+            noteForm.reset();
+            event.preventDefault();
+        });
+    }
+
+    function getData(data = null)
+    {
+        const notesContainer = document.querySelector('.notes');
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', 'actions.php');
+        xhr.responseType = 'json';
+        xhr.onload = function (){
+            if (this.response.error) {
+                console.log(this.response.error);
+            } else {
+                notesContainer.innerHTML = this.response.data;
+            }
+        }
+        xhr.send(data);
+    }
+
+    document.addEventListener("DOMContentLoaded", function (){
+        sendNote();
+        getData();
+    });
+
+</script>
